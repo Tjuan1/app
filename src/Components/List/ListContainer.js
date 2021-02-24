@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import List from './List/List'
 import Data from '../../Data/Data'
-
+import { DragDropContext } from 'react-beautiful-dnd'
 
 function ListContainer() {
   const [name, setName] = useState('');
@@ -76,23 +76,35 @@ function ListContainer() {
           onChange={(e) => setName(e.target.value)}/>
         </div>
       </form>
+      <div className="list-container">
       {list.length > 0 && (
-        <div className="list-container">
-          <List items={showList} taskCompleted={taskCompleted} removeItem={removeItem}/>
-          <div className="button-container">
-            <p className="items-left">{isActive} items left</p>
-            <button className={`select-btn active-${active === 'all' ? active : null}`} onClick={showAll}>All</button>
-            <button className={`select-btn active-${active === 'active' ? active : null}`} onClick={showActive}>Active</button>
-            <button className={`select-btn active-${active === 'completed' ? active : null}`} onClick={showCompleted}>Completed</button>      
-            <button className="clear-completed-btn" onClick={removeCompleted}>clear completed</button>          
-          </div>
-          <div className="mobile-button-container">
-            <button className={`select-btn-mobile active-${active === 'all' ? active : null}`} onClick={showAll}>All</button>
-            <button className={`select-btn-mobile active-${active === 'active' ? active : null}`} onClick={showActive}>Active</button>
-            <button className={`select-btn-mobile active-${active === 'completed' ? active : null}`} onClick={showCompleted}>Completed</button>
-          </div>      
-        </div>
-    )} 
+       
+          <DragDropContext
+          onDragEnd={(param)=> {
+            const srcIndex = param.source.index;
+            const destIndex = param.destination.index;
+            list.splice(destIndex, 0, list.splice(srcIndex, 1)[0])
+          }}>
+            <List items={showList} taskCompleted={taskCompleted} removeItem={removeItem}/>
+            </DragDropContext>      
+
+        )}
+         </div>
+            <div className="button-container">
+              <p className="items-left">{isActive} items left</p>
+              <button className={`select-btn active-${active === 'all' ? active : null}`} onClick={showAll}>All</button>
+              <button className={`select-btn active-${active === 'active' ? active : null}`} onClick={showActive}>Active</button>
+              <button className={`select-btn active-${active === 'completed' ? active : null}`} onClick={showCompleted}>Completed</button>      
+              <button className="clear-completed-btn" onClick={removeCompleted}>clear completed</button>          
+            </div>
+            <div className="mobile-button-container">
+              <button className={`select-btn-mobile active-${active === 'all' ? active : null}`} onClick={showAll}>All</button>
+              <button className={`select-btn-mobile active-${active === 'active' ? active : null}`} onClick={showActive}>Active</button>
+              <button className={`select-btn-mobile active-${active === 'completed' ? active : null}`} onClick={showCompleted}>Completed</button>
+            </div>
+         
+
+ 
       
   </section>
   )
